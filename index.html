@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Analizador de Palabras Clave</title>
+
+<style>
+body {
+    font-family: Arial;
+    margin: 0;
+    background: #f4f6f9;
+}
+
+/* 🔷 HEADER */
+.header {
+    background: linear-gradient(to right, #003366, #007acc);
+    color: white;
+    padding: 15px 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header img {
+    height: 70px; /* 🔥 LOGO MÁS GRANDE */
+}
+
+.header h2 {
+    margin: 0;
+}
+
+/* 📦 CONTENEDOR PRINCIPAL */
+.main {
+    display: flex;
+}
+
+/* 🧠 CONTENIDO PRINCIPAL */
+.content {
+    flex: 1;
+    padding: 20px;
+}
+
+/* 📋 PANEL LATERAL */
+.sidebar {
+    width: 0;
+    background: #ffffff;
+    overflow: hidden;
+    transition: 0.3s;
+    border-left: 2px solid #ddd;
+}
+
+.sidebar.active {
+    width: 320px;
+    padding: 15px;
+}
+
+/* 🔘 BOTONES */
+button {
+    background: #007acc;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-right: 5px;
+}
+
+.toggle {
+    background: #555;
+}
+
+/* 📄 TEXTAREA */
+textarea {
+    width: 100%;
+    height: 110px;
+    margin-bottom: 10px;
+    padding: 10px;
+}
+
+/* 🧾 RESULTADO + IMAGEN */
+.resultado-container {
+    display: flex;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+#resultado {
+    flex: 2;
+    padding: 15px;
+    background: white;
+    border-radius: 8px;
+    min-height: 150px;
+}
+
+/* 🖼 IMAGEN REFERENCIA */
+.referencia {
+    flex: 1;
+    background: white;
+    border-radius: 8px;
+    padding: 10px;
+    text-align: center;
+}
+
+.referencia img {
+    width: 100%;
+    max-width: 350px; /* 🔥 MÁS GRANDE */
+}
+
+/* 🎨 COLORES */
+.patologia { color: red; font-weight: bold; text-decoration: underline; }
+.altocosto { color: purple; font-weight: bold; text-decoration: underline; }
+.huerfana { color: blue; font-weight: bold; text-decoration: underline; }
+.medicamento { color: green; font-weight: bold; text-decoration: underline; }
+
+/* 📌 TITULOS */
+.titulo {
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- 🔷 ENCABEZADO -->
+<div class="header">
+    <h2>🔍 Analizador de Casos</h2>
+    <img src="logo-supersalud.png">
+</div>
+
+<div class="main">
+
+    <!-- 🧠 CONTENIDO -->
+    <div class="content">
+
+        <button class="toggle" onclick="toggleSidebar()">☰ Configurar palabras</button>
+
+        <h3>Texto a analizar</h3>
+        <textarea id="texto"></textarea>
+
+        <button onclick="analizar()">Analizar</button>
+        <button onclick="limpiarTexto()">Limpiar</button>
+
+        <!-- 📊 RESULTADO + IMAGEN -->
+        <div class="resultado-container">
+
+            <div id="resultado"></div>
+
+            <div class="referencia">
+                <h4>Referencia de colores</h4>
+                <img src="referencia-colores.png">
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- 📋 PANEL LATERAL -->
+    <div class="sidebar" id="sidebar">
+
+        <div class="titulo">🔴 Patologías</div>
+        <textarea id="patologia"></textarea>
+
+        <div class="titulo">🟣 Alto costo</div>
+        <textarea id="altocosto"></textarea>
+
+        <div class="titulo">🔵 Huérfanas</div>
+        <textarea id="huerfana"></textarea>
+
+        <div class="titulo">🟢 Medicamentos</div>
+        <textarea id="medicamento"></textarea>
+
+    </div>
+
+</div>
+
+<script>
+
+// 🔽 Mostrar / ocultar panel
+function toggleSidebar() {
+    document.getElementById("sidebar").classList.toggle("active");
+}
+
+// 🧹 Limpiar texto
+function limpiarTexto() {
+    document.getElementById("texto").value = "";
+    document.getElementById("resultado").innerHTML = "";
+}
+
+// 🔒 Guardar listas
+["patologia","altocosto","huerfana","medicamento"].forEach(id => {
+    let t = document.getElementById(id);
+    t.value = localStorage.getItem(id) || "";
+    t.addEventListener("input", () => {
+        localStorage.setItem(id, t.value);
+    });
+});
+
+function escaparRegex(texto) {
+    return texto.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+function construirMapa() {
+    let mapa = {};
+
+    function agregar(palabras, clase) {
+        palabras.forEach(p => {
+            let limpio = p.trim().toLowerCase();
+            if (limpio !== "") {
+                mapa[limpio] = clase;
+            }
+        });
+    }
+
+    agregar(document.getElementById("patologia").value.split("\n"), "patologia");
+    agregar(document.getElementById("altocosto").value.split("\n"), "altocosto");
+    agregar(document.getElementById("huerfana").value.split("\n"), "huerfana");
+    agregar(document.getElementById("medicamento").value.split("\n"), "medicamento");
+
+    return mapa;
+}
+
+function analizar() {
+
+    let texto = document.getElementById("texto").value;
+    let mapa = construirMapa();
+
+    let palabras = Object.keys(mapa)
+        .sort((a, b) => b.length - a.length)
+        .map(p => escaparRegex(p));
+
+    if (palabras.length === 0) {
+        document.getElementById("resultado").innerText = texto;
+        return;
+    }
+
+    let regex = new RegExp("\\b(" + palabras.join("|") + ")\\b", "gi");
+
+    let resultado = texto.replace(regex, function(match) {
+        let clase = mapa[match.toLowerCase()];
+        return `<span class="${clase}">${match}</span>`;
+    });
+
+    document.getElementById("resultado").innerHTML = resultado;
+}
+
+</script>
+
+</body>
+</html>
