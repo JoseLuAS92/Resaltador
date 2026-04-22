@@ -11,7 +11,7 @@ body {
     background: #f4f6f9;
 }
 
-/* 🔷 HEADER */
+/* HEADER */
 .header {
     background: linear-gradient(to right, #003366, #007acc);
     color: white;
@@ -22,25 +22,20 @@ body {
 }
 
 .header img {
-    height: 70px; /* 🔥 LOGO MÁS GRANDE */
+    height: 70px;
 }
 
-.header h2 {
-    margin: 0;
-}
-
-/* 📦 CONTENEDOR PRINCIPAL */
+/* MAIN */
 .main {
     display: flex;
 }
 
-/* 🧠 CONTENIDO PRINCIPAL */
 .content {
     flex: 1;
     padding: 20px;
 }
 
-/* 📋 PANEL LATERAL */
+/* SIDEBAR */
 .sidebar {
     width: 0;
     background: #ffffff;
@@ -54,7 +49,7 @@ body {
     padding: 15px;
 }
 
-/* 🔘 BOTONES */
+/* BOTONES */
 button {
     background: #007acc;
     color: white;
@@ -69,7 +64,7 @@ button {
     background: #555;
 }
 
-/* 📄 TEXTAREA */
+/* TEXTAREA */
 textarea {
     width: 100%;
     height: 110px;
@@ -77,7 +72,7 @@ textarea {
     padding: 10px;
 }
 
-/* 🧾 RESULTADO + IMAGEN */
+/* RESULTADO + IMAGEN */
 .resultado-container {
     display: flex;
     gap: 20px;
@@ -92,7 +87,6 @@ textarea {
     min-height: 150px;
 }
 
-/* 🖼 IMAGEN REFERENCIA */
 .referencia {
     flex: 1;
     background: white;
@@ -103,27 +97,24 @@ textarea {
 
 .referencia img {
     width: 100%;
-    max-width: 350px; /* 🔥 MÁS GRANDE */
+    max-width: 350px;
 }
 
-/* 🎨 COLORES */
+/* COLORES */
 .patologia { color: red; font-weight: bold; text-decoration: underline; }
 .altocosto { color: purple; font-weight: bold; text-decoration: underline; }
 .huerfana { color: blue; font-weight: bold; text-decoration: underline; }
 .medicamento { color: green; font-weight: bold; text-decoration: underline; }
 
-/* 📌 TITULOS */
 .titulo {
     font-weight: bold;
     margin-top: 10px;
 }
-
 </style>
 </head>
 
 <body>
 
-<!-- 🔷 ENCABEZADO -->
 <div class="header">
     <h2>🔍 Analizador de Casos</h2>
     <img src="logo-supersalud.png">
@@ -131,67 +122,87 @@ textarea {
 
 <div class="main">
 
-    <!-- 🧠 CONTENIDO -->
-    <div class="content">
+<div class="content">
 
-        <button class="toggle" onclick="toggleSidebar()">☰ Configurar palabras</button>
+<button class="toggle" onclick="toggleSidebar()">☰ Configurar palabras</button>
 
-        <h3>Texto a analizar</h3>
-        <textarea id="texto"></textarea>
+<h3>Texto a analizar</h3>
+<textarea id="texto"></textarea>
 
-        <button onclick="analizar()">Analizar</button>
-        <button onclick="limpiarTexto()">Limpiar</button>
+<button onclick="analizar()">Analizar</button>
+<button onclick="limpiarTexto()">Limpiar</button>
 
-        <!-- 📊 RESULTADO + IMAGEN -->
-        <div class="resultado-container">
+<div class="resultado-container">
+    <div id="resultado"></div>
 
-            <div id="resultado"></div>
-
-            <div class="referencia">
-                <h4>Referencia de colores</h4>
-                <img src="referencia-colores.png">
-            </div>
-
-        </div>
-
+    <div class="referencia">
+        <h4>Referencia de colores</h4>
+        <img src="referencia-colores.png">
     </div>
+</div>
 
-    <!-- 📋 PANEL LATERAL -->
-    <div class="sidebar" id="sidebar">
+</div>
 
-        <div class="titulo">🔴 Patologías</div>
-        <textarea id="patologia"></textarea>
+<div class="sidebar" id="sidebar">
 
-        <div class="titulo">🟣 Alto costo</div>
-        <textarea id="altocosto"></textarea>
+<div class="titulo">🔴 Patologías</div>
+<textarea id="patologia">
+cancer
+diabetes
+hipertension
+tumor
+leucemia
+</textarea>
 
-        <div class="titulo">🔵 Huérfanas</div>
-        <textarea id="huerfana"></textarea>
+<div class="titulo">🟣 Alto costo</div>
+<textarea id="altocosto">
+quimioterapia
+radioterapia
+biologico
+trasplante
+</textarea>
 
-        <div class="titulo">🟢 Medicamentos</div>
-        <textarea id="medicamento"></textarea>
+<div class="titulo">🔵 Huérfanas</div>
+<textarea id="huerfana">
+hemofilia
+gaucher
+fibrosis quistica
+esclerosis multiple
+</textarea>
 
-    </div>
+<div class="titulo">🟢 Medicamentos</div>
+<textarea id="medicamento">
+ibuprofeno
+acetaminofen
+morfina
+vacunas
+insulina
+</textarea>
+
+</div>
 
 </div>
 
 <script>
 
-// 🔽 Mostrar / ocultar panel
 function toggleSidebar() {
     document.getElementById("sidebar").classList.toggle("active");
 }
 
-// 🧹 Limpiar texto
 function limpiarTexto() {
     document.getElementById("texto").value = "";
     document.getElementById("resultado").innerHTML = "";
 }
 
-// 🔒 Guardar listas
+// 🔒 Guardado inteligente (NO borra banco inicial)
 ["patologia","altocosto","huerfana","medicamento"].forEach(id => {
     let t = document.getElementById(id);
-    t.value = localStorage.getItem(id) || "";
+
+    let guardado = localStorage.getItem(id);
+    if (guardado) {
+        t.value = guardado;
+    }
+
     t.addEventListener("input", () => {
         localStorage.setItem(id, t.value);
     });
