@@ -73,30 +73,17 @@ button {
 
 textarea {
     width: 100%;
-    height: 110px;
+    height: 160px;
     margin-bottom: 10px;
     padding: 10px;
 }
 
-.resultado-container {
-    display: grid;
-    grid-template-columns: 1fr 1.3fr;
-    gap: 20px;
-    margin-top: 20px;
-}
-
-.resultado-lado {
-    display: flex;
-    gap: 16px;
-    align-items: flex-start;
-}
-
 #resultado {
-    flex: 2;
+    flex: 1;
     padding: 15px;
     background: white;
     border-radius: 8px;
-    min-height: 150px;
+    min-height: 180px;
 }
 
 .patologia { color: red; font-weight: bold; text-decoration: underline; }
@@ -115,6 +102,14 @@ textarea {
     border-radius: 8px;
     border: 1px solid #ddd;
     max-width: 360px;
+    position: sticky;
+    top: 20px;
+}
+    
+.resultado-fila {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
 }
 </style>
 </head>
@@ -134,19 +129,17 @@ textarea {
 <button onclick="analizar()">Analizar</button>
 <button onclick="limpiarTexto()">Limpiar</button>
 
-<div class="resultado-container">
+<!-- CUADRO PARA PEGAR EL TEXTO (ARRIBA) -->
+<textarea id="texto" placeholder="Pegue aquí el texto a analizar..."></textarea>
 
-    <!-- Columna izquierda: texto a analizar -->
-    <textarea id="texto"></textarea>
+<!-- RESULTADO + LEYENDA (DEBAJO) -->
+<div class="resultado-fila">
 
-    <!-- Columna derecha: resultado + leyenda -->
-    <div class="resultado-lado">
-        <div id="resultado"></div>
+    <div id="resultado"></div>
 
-        <div class="leyenda">
-            <h4>Referencia de colores</h4>
-            <img src="./referencia-colores.png" alt="Referencia de colores" class="referencia-img">
-        </div>
+    <div class="leyenda">
+        <h4>Referencia de colores</h4>
+        <img src="./referencia-colores.png" alt="Referencia de colores" class="referencia-img">
     </div>
 
 </div>
