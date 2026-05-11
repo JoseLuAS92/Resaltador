@@ -92,7 +92,10 @@ textarea {
 .altocosto { color: purple; font-weight: bold; text-decoration: underline; }
 .huerfana { color: blue; font-weight: bold; text-decoration: underline; }
 .medicamento { color: green; font-weight: bold; text-decoration: underline; }
-.gestores { color: yellow; font-weight: bold; text-decoration: underline; }
+.gestores { 
+    color: #c9a200;   /* amarillo más visible que “yellow” puro */
+    font-weight: bold; 
+    text-decoration: underline;
 }
     
 .titulo {
@@ -2054,7 +2057,7 @@ function construirMapa() {
     agregar(document.getElementById("altocosto").value, "altocosto");
     agregar(document.getElementById("huerfana").value, "huerfana");
     agregar(document.getElementById("medicamento").value, "medicamento");
-    agregar(document.getElementById("Gestores").value, "advertencia");
+    agregar(document.getElementById("Gestores").value, "gestores");
 
     return mapa;
 }
