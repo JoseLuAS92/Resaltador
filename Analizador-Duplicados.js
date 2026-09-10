@@ -1,4 +1,4 @@
-javascript:(function(){
+(function(){
 
 if(document.getElementById('analizadorRecurrencias')){
 document.getElementById('analizadorRecurrencias').remove();
